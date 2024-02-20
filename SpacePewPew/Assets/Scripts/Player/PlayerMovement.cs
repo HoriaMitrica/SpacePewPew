@@ -1,25 +1,52 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
+
 
 public class PlayerMovement : MonoBehaviour
 {
-    private float thrust = 5f; // Adjust this value to control the strength of the impulse
+    public float thrust = 5f;
+    private Camera mainCamera;
     private Rigidbody rb;
     void Start()
     {
+        mainCamera = Camera.main;
         rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        float moveHorizontal = Input.GetAxis("Horizontal");
-        float moveVertical = Input.GetAxis("Vertical");
-        Vector3 movement = new Vector3(moveHorizontal, 0, moveVertical);
-        if (movement.magnitude > 0)
+        Vector3 mousePositionScreen=Input.mousePosition;
+
+        Vector3 mousePositionWorld = mainCamera.ScreenToWorldPoint(new Vector3(mousePositionScreen.x, mousePositionScreen.y, mainCamera.transform.position.y - transform.position.y));
+        Vector3 playerPos=transform.position;
+        Vector3 directionToMouse=(mousePositionWorld-playerPos).normalized;
+        float distanceToMouse=Vector3.Distance(mousePositionWorld,playerPos);
+        transform.forward=directionToMouse;
+        Debug.Log(distanceToMouse);
+        CheckBoosting();
+        if(distanceToMouse<1)
         {
-            rb.AddForce(movement * thrust * Time.deltaTime, ForceMode.Impulse);
+            rb.velocity=Vector3.zero;
+        }
+        else
+        {
+            rb.AddForce(transform.forward * thrust, ForceMode.Impulse);
+        }
+        Debug.Log(rb.velocity+" velocity");
+    }
+
+    private void CheckBoosting()
+    {
+        if (Input.GetAxis("Boost") != 0)
+        {
+            thrust = 5f;
+        }
+        else
+        {
+            thrust = 1f;
         }
     }
 }
