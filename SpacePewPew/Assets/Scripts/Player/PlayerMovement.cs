@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public float thrust = 5f;
     private Camera mainCamera;
+    private Vector3 mousePositionWorld;
     private Rigidbody rb;
     void Start()
     {
@@ -18,24 +19,27 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        Vector3 mousePositionScreen=Input.mousePosition;
+        mousePositionWorld = mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, mainCamera.transform.position.y - transform.position.y));
+        transform.forward = GetDirectionToMouse();
 
-        Vector3 mousePositionWorld = mainCamera.ScreenToWorldPoint(new Vector3(mousePositionScreen.x, mousePositionScreen.y, mainCamera.transform.position.y - transform.position.y));
-        Vector3 playerPos=transform.position;
-        Vector3 directionToMouse=(mousePositionWorld-playerPos).normalized;
-        float distanceToMouse=Vector3.Distance(mousePositionWorld,playerPos);
-        transform.forward=directionToMouse;
-        Debug.Log(distanceToMouse);
         CheckBoosting();
-        if(distanceToMouse<1)
+        Move();
+    }
+    public Vector3 GetDirectionToMouse()
+    {
+        return (mousePositionWorld - transform.position).normalized;
+    }
+    private void Move()
+    {
+        float distanceToMouse = Vector3.Distance(mousePositionWorld, transform.position);
+        if (distanceToMouse < 1)
         {
-            rb.velocity=Vector3.zero;
+            rb.velocity = Vector3.zero;
         }
         else
         {
             rb.AddForce(transform.forward * thrust, ForceMode.Impulse);
         }
-        Debug.Log(rb.velocity+" velocity");
     }
 
     private void CheckBoosting()
