@@ -6,26 +6,27 @@ public class Shooting : MonoBehaviour
 {
 
     public GameObject Projectile;
-    private float FireRate=0.5f;
+    private float FireRate=0.1f;
     private bool IsFiring=false;
     private float LastFireTime = 0f;
-    private PlayerMovement PlayerMovement;
+    private RotationToMouse TurretRotation;
     private Rigidbody ProjectileRB;
     private float ShootForce=10f;
     private Collider SpawnPoint;
     void Start()
     {
-        PlayerMovement=GetComponentInParent<PlayerMovement>();
+        TurretRotation=GetComponent<RotationToMouse>();
         SpawnPoint=GetComponent<SphereCollider>();
     }
 
     // Update is called once per frame
     void Update()
     {
-if (Input.GetKey(KeyCode.LeftControl))
+    if (Input.GetKey(KeyCode.LeftControl))
     {
         if (!IsFiring)
         {
+            SpawnProjectile();
             IsFiring = true;
             LastFireTime = Time.time;
         }
@@ -39,15 +40,13 @@ if (Input.GetKey(KeyCode.LeftControl))
     {
         IsFiring = false;
     }
-
     }
 
     private void SpawnProjectile()
     {
-        var spawnedProjectile = Instantiate(Projectile, SpawnPoint.transform.position + PlayerMovement.GetDirectionToMouse(), SpawnPoint.transform.rotation);
+        var spawnedProjectile = Instantiate(Projectile, SpawnPoint.transform.position + TurretRotation.GetDirectionToMouse(), SpawnPoint.transform.rotation);
         ProjectileRB = spawnedProjectile.GetComponent<Rigidbody>();
-        //ProjectileRB.AddForce(PlayerMovement.GetDirectionToMouse()*ShootForce*Time.deltaTime,ForceMode.Impulse);
-        ProjectileRB.velocity = PlayerMovement.GetDirectionToMouse() * ShootForce;
+        ProjectileRB.velocity = TurretRotation.GetDirectionToMouse() * ShootForce;
         Destroy(spawnedProjectile, 2f);
     }
 }
