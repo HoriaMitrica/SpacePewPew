@@ -6,7 +6,8 @@ using Unity.VisualScripting;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float thrust = 5f;
+    private float Thrust = 0f;
+    private float MaxThrust=5f;
     private RotationToMouse playerRotation;
     private Rigidbody rb;
     void Start()
@@ -16,34 +17,27 @@ public class PlayerMovement : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     { 
         CheckBoosting();
-        Move();
+        rb.AddForce(transform.forward * Thrust, ForceMode.Impulse);
     }
 
-    private void Move() 
-    {
-        
-        float distanceToMouse = Vector3.Distance(playerRotation.GetMousePositionWorld(), transform.position);
-        if (distanceToMouse < 1)
-        {
-            rb.velocity = Vector3.zero;
-        }
-        else
-        {
-            rb.AddForce(transform.forward * thrust, ForceMode.Impulse);
-        }
-    }
     private void CheckBoosting()
     {
         if (Input.GetAxis("Boost") != 0)
         {
-            thrust = 5f;
+            Thrust=Accelerate(Thrust,MaxThrust);
         }
         else
         {
-            thrust = 1f;
+            Thrust = 0f;
         }
+    }
+    private float Accelerate(float thrust,float maxThrust)
+    {
+        if(thrust<maxThrust)
+        return thrust+Time.deltaTime;
+        return maxThrust;
     }
 }

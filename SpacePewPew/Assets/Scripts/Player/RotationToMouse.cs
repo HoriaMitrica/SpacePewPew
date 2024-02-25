@@ -5,11 +5,9 @@ using UnityEngine.UIElements;
 
 public class RotationToMouse : MonoBehaviour
 {
-    public float RotationSpeed=1f;
-    private Camera mainCamera;
+    public float RotationSpeed=2f;
     void Start()
     {
-        mainCamera = Camera.main;
     }
 
     // Update is called once per frame
@@ -29,12 +27,8 @@ public class RotationToMouse : MonoBehaviour
     }
     protected virtual void Rotate()
     {
-
-         transform.forward = Vector3.Slerp(transform.forward, GetDirectionToMouse(), RotationSpeed*Time.deltaTime);
+        transform.forward = Vector3.Slerp(transform.forward, GetDirectionToMouse(), RotationSpeed*Time.deltaTime);
+        Debug.Log(transform.forward);
     }
-        protected virtual void Booga()
-    {
 
-         transform.forward = Vector3.Slerp(transform.forward, GetDirectionToMouse(), RotationSpeed*Time.deltaTime);
-    }
 }
