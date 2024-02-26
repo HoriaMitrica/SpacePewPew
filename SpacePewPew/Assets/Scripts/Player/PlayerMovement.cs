@@ -7,7 +7,7 @@ using Unity.VisualScripting;
 public class PlayerMovement : MonoBehaviour
 {
     private float Thrust = 0f;
-    private float MaxThrust=5f;
+    private float MaxThrust=3f;
     private RotationToMouse playerRotation;
     private Rigidbody rb;
     void Start()
@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     { 
         CheckBoosting();
+        
         rb.AddForce(transform.forward * Thrust, ForceMode.Impulse);
     }
 

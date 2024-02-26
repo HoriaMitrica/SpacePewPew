@@ -6,13 +6,13 @@ public class Shooting : MonoBehaviour
 {
 
     public GameObject Projectile;
-    private float FireRate=0.1f;
+    private float FireRate=0.2f;
     private bool IsFiring=false;
     private float LastFireTime = 0f;
     private RotationToMouse TurretRotation;
     private Rigidbody ProjectileRB;
     private float ShootForce=10f;
-    private Collider SpawnPoint;
+    public SphereCollider SpawnPoint;
     void Start()
     {
         TurretRotation=GetComponent<RotationToMouse>();
@@ -44,7 +44,7 @@ public class Shooting : MonoBehaviour
 
     private void SpawnProjectile()
     {
-        var spawnedProjectile = Instantiate(Projectile, SpawnPoint.transform.position + TurretRotation.GetDirectionToMouse(), SpawnPoint.transform.rotation);
+        var spawnedProjectile = Instantiate(Projectile,SpawnPoint.transform.position+transform.forward, SpawnPoint.transform.rotation);
         ProjectileRB = spawnedProjectile.GetComponent<Rigidbody>();
         ProjectileRB.velocity = TurretRotation.GetDirectionToMouse() * ShootForce;
         Destroy(spawnedProjectile, 2f);
