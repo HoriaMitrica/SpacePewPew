@@ -18,7 +18,7 @@ public class PlayerRotation : RotationToMouse
         Vector3 crossProduct = Vector3.Cross(transform.forward, GetDirectionToMouse());
         float dotProduct = Vector3.Dot(transform.forward, GetDirectionToMouse());
         float zRotation = Mathf.Lerp(crossProduct.y > 0f ? -zRotationAmount : zRotationAmount, 0, Mathf.Abs(dotProduct));
-        transform.Rotate(transform.forward,zRotation,Space.World);
+        transform.Rotate(transform.forward*Time.deltaTime*RotationSpeed,zRotation,Space.World);
         }   
 
     }
